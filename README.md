@@ -23,7 +23,8 @@ iJewellery_Frontend/
 │   │   ├── client.ts       # Axios instance with JWT interceptor + auto-logout
 │   │   ├── auth.ts         # Login API call
 │   │   ├── dashboard.ts    # Dashboard stats API call
-│   │   └── loans.ts        # Loan search, lookups, entry API calls
+│   │   ├── loans.ts        # Loan search, lookups, next-number, entry API calls
+│   │   └── customers.ts    # Customer lookup by phone + create customer
 │   ├── components/
 │   │   ├── Layout/
 │   │   │   ├── Layout.tsx  # App shell (sidebar + header + outlet)
@@ -43,7 +44,7 @@ iJewellery_Frontend/
 │   ├── store/
 │   │   └── authStore.ts    # Zustand store (token + user, persisted to localStorage)
 │   └── types/
-│       └── index.ts        # TypeScript interfaces (Loan, Lookups, DashboardStats, etc.)
+│       └── index.ts        # TypeScript interfaces (Loan, Lookups, DashboardStats, CustomerInfo, etc.)
 ├── index.html
 ├── package.json
 ├── vite.config.ts          # Dev proxy: /api → localhost:8000
@@ -104,7 +105,7 @@ Output goes to `dist/` — ready for Vercel or any static host.
 |-------|------|-------------|
 | `/login` | Login | Username + password sign-in |
 | `/dashboard` | Dashboard | Metal rates, portfolio stats, source-wise breakdown |
-| `/loans/entry` | Loan Entry | Create new multi-item gold loan |
+| `/loans/entry` | Loan Entry | Mobile search → customer card/create → multi-item gold loan |
 | `/loans/search` | Loan Search | Search loans by number, name, phone, address, source |
 
 ## Environment & API URL

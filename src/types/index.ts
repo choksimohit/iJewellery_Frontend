@@ -3,6 +3,15 @@ export interface User {
   display_name: string
 }
 
+export interface CustomerInfo {
+  CustomerID: number
+  Name: string
+  Address: string
+  ActiveLoanCount: number
+  ClosedLoanCount: number
+  AvgClosureDays: number
+}
+
 export interface Loan {
   LoanNumber: number
   LoanDate: string
@@ -64,12 +73,12 @@ export interface LoanItem {
   metal_type: string
   item_description: string
   item_weight: number
-  metal_price: number
   melting: number
 }
 
 export interface LoanEntryRequest {
   loan_date: string
+  customer_id: number
   customer_name: string
   customer_address: string
   customer_phone: string

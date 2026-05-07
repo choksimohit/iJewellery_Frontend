@@ -10,6 +10,9 @@ export const loansApi = {
   getLookups: () =>
     client.get<Lookups>('/loans/lookups').then((r) => r.data),
 
+  getNextNumber: () =>
+    client.get<{ next_loan_number: number }>('/loans/next-number').then((r) => r.data),
+
   create: (data: LoanEntryRequest) =>
     client
       .post<{ success: boolean; loan_number: number }>('/loans/entry', data)

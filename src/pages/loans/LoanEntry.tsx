@@ -414,7 +414,7 @@ export default function LoanEntry() {
                       className={inputCls} required>
                       <option value="">Select...</option>
                       {lookups?.metal_types.map((t) => (
-                        <option key={t.MetalTypeID} value={t.MetalType}>{t.MetalType}</option>
+                        <option key={t.MetalTypeID} value={t.MetalType[0]}>{t.MetalType}</option>
                       ))}
                     </select>
                   </div>

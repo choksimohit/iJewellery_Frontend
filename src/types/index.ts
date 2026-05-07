@@ -23,7 +23,8 @@ export interface Loan {
   IsClosure: boolean
   MetalType?: string
   ItemDescription?: string
-  ItemWeight?: number
+  MetalWeight?: number   // SP returns MetalWeight, not ItemWeight
+  ItemWeight?: number    // alias kept for compatibility
   Melting?: number
 }
 

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { Printer, ArrowLeft, Gem } from 'lucide-react'
+import { Printer, ArrowLeft } from 'lucide-react'
 import { loansApi } from '../../api/loans'
 import type { Loan } from '../../types'
 
@@ -47,8 +47,18 @@ export default function LoanReceipt() {
 
   return (
     <>
-      {/* Screen-only toolbar */}
-      <div className="print:hidden flex items-center justify-between px-6 py-3 bg-navy-900 shadow">
+      <style>{`
+        @page { size: A6 portrait; margin: 6mm; }
+        @media print {
+          body, html { margin: 0; padding: 0; }
+          .no-print { display: none !important; }
+          .receipt { width: 100% !important; max-width: 100% !important; box-shadow: none !important;
+                     border-radius: 0 !important; margin: 0 !important; padding: 0 !important; }
+        }
+      `}</style>
+
+      {/* Toolbar — hidden when printing */}
+      <div className="no-print flex items-center justify-between px-5 py-2.5 bg-navy-900 shadow">
         <button
           onClick={() => navigate(-1)}
           className="flex items-center gap-2 text-slate-300 hover:text-white text-sm transition-colors"
@@ -57,78 +67,66 @@ export default function LoanReceipt() {
         </button>
         <button
           onClick={() => window.print()}
-          className="flex items-center gap-2 px-5 py-2 bg-gold-500 hover:bg-gold-600 text-white rounded-lg font-semibold text-sm transition-colors shadow"
+          className="flex items-center gap-2 px-4 py-1.5 bg-gold-500 hover:bg-gold-600 text-white rounded-lg font-semibold text-sm transition-colors"
         >
-          <Printer className="w-4 h-4" /> Print Receipt
+          <Printer className="w-4 h-4" /> Print
         </button>
       </div>
 
-      {/* Force A6 page size when printing */}
-      <style>{`
-        @page { size: A6 portrait; margin: 8mm; }
-        @media print {
-          body { margin: 0; }
-          .receipt-card { width: 100% !important; max-width: 100% !important; box-shadow: none !important; border-radius: 0 !important; margin: 0 !important; }
-        }
-      `}</style>
-
-      {/* Receipt — centered on screen, fills A6 when printing */}
-      <div className="flex justify-center bg-gray-100 min-h-screen py-8 print:bg-white print:py-0 print:block">
+      {/* Receipt preview */}
+      <div className="flex justify-center bg-gray-100 min-h-screen py-6 print:bg-white print:py-0 print:min-h-0">
         <div
-          className="receipt-card bg-white w-full max-w-xs mx-4 shadow-lg rounded-xl print:shadow-none print:rounded-none print:mx-0 print:max-w-full"
-          style={{ fontFamily: 'Arial, sans-serif' }}
+          className="receipt bg-white shadow-md rounded-lg overflow-hidden"
+          style={{ width: '105mm', fontFamily: 'Arial, sans-serif', fontSize: '11px' }}
         >
-          {/* Receipt header */}
-          <div className="text-center px-6 pt-6 pb-4 border-b-2 border-dashed border-gray-300">
-            <div className="flex items-center justify-center gap-2 mb-1">
-              <div className="w-8 h-8 rounded-lg bg-gold-500 flex items-center justify-center">
-                <Gem className="w-4 h-4 text-white" />
-              </div>
-              <span className="text-xl font-extrabold text-gray-900 tracking-tight">iJewellery</span>
-            </div>
-            <p className="text-xs text-gray-400 mb-3">Gold Loan Management System</p>
-            <div className="flex justify-between text-xs text-gray-500 bg-gray-50 rounded-lg px-3 py-2">
-              <span>Loan No: <strong className="text-gray-800 text-sm">#{header.LoanNumber}</strong></span>
-              <span>Date: <strong className="text-gray-800">{loanDate}</strong></span>
+          {/* Header */}
+          <div style={{ textAlign: 'center', padding: '8px 12px 6px', borderBottom: '1.5px dashed #d1d5db' }}>
+            <div style={{ fontSize: '18px', fontWeight: '900', letterSpacing: '-0.5px', color: '#111' }}>iJewellery</div>
+            <div style={{ fontSize: '9px', color: '#9ca3af', marginTop: '1px' }}>Gold Loan Management System</div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', background: '#f9fafb', borderRadius: '6px', padding: '4px 8px' }}>
+              <span>Loan No: <strong style={{ fontSize: '13px', color: '#111' }}>#{header.LoanNumber}</strong></span>
+              <span>Date: <strong>{loanDate}</strong></span>
             </div>
           </div>
 
-          {/* Customer details */}
-          <div className="px-6 py-4 border-b border-dashed border-gray-200">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Customer</p>
-            <p className="font-bold text-gray-900 text-base">{header.Name}</p>
-            {header.Address && <p className="text-sm text-gray-500 mt-0.5">{header.Address}</p>}
-            {header.Phone && <p className="text-sm text-gray-500">📞 {header.Phone}</p>}
+          {/* Customer */}
+          <div style={{ padding: '6px 12px', borderBottom: '1px dashed #e5e7eb' }}>
+            <div style={{ fontSize: '8px', fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '3px' }}>Customer</div>
+            <div style={{ fontWeight: '800', fontSize: '13px', color: '#111' }}>{header.Name}</div>
+            {header.Address && <div style={{ color: '#6b7280', marginTop: '1px' }}>{header.Address}</div>}
+            {header.Phone && <div style={{ color: '#6b7280' }}>📞 {header.Phone}</div>}
             {header.SourceName && (
-              <span className="inline-block mt-1.5 text-xs bg-gold-50 text-gold-700 border border-gold-200 rounded px-2 py-0.5 font-medium">
+              <span style={{ display: 'inline-block', marginTop: '3px', fontSize: '9px', background: '#fffbeb', color: '#b45309', border: '1px solid #fde68a', borderRadius: '4px', padding: '1px 6px', fontWeight: '600' }}>
                 Source: {header.SourceName}
               </span>
             )}
           </div>
 
-          {/* Items table */}
-          <div className="px-6 py-4 border-b border-dashed border-gray-200">
-            <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Pledged Items</p>
-            <table className="w-full text-sm">
+          {/* Items */}
+          <div style={{ padding: '6px 12px', borderBottom: '1px dashed #e5e7eb' }}>
+            <div style={{ fontSize: '8px', fontWeight: '700', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Pledged Items</div>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '10px' }}>
               <thead>
-                <tr className="text-xs text-gray-400 border-b border-gray-100">
-                  <th className="text-left pb-1.5 font-semibold">#</th>
-                  <th className="text-left pb-1.5 font-semibold">Item</th>
-                  <th className="text-right pb-1.5 font-semibold">Metal</th>
-                  <th className="text-right pb-1.5 font-semibold">Wt (g)</th>
-                  <th className="text-right pb-1.5 font-semibold">Melt%</th>
+                <tr style={{ color: '#9ca3af', borderBottom: '1px solid #f3f4f6' }}>
+                  <th style={{ textAlign: 'left', paddingBottom: '3px', fontWeight: '600', width: '16px' }}>#</th>
+                  <th style={{ textAlign: 'left', paddingBottom: '3px', fontWeight: '600' }}>Item</th>
+                  <th style={{ textAlign: 'right', paddingBottom: '3px', fontWeight: '600' }}>Metal</th>
+                  <th style={{ textAlign: 'right', paddingBottom: '3px', fontWeight: '600' }}>Wt (g)</th>
+                  <th style={{ textAlign: 'right', paddingBottom: '3px', fontWeight: '600' }}>Melt%</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((row, idx) => (
-                  <tr key={idx} className="border-b border-gray-50">
-                    <td className="py-1.5 text-gray-400 text-xs">{idx + 1}</td>
-                    <td className="py-1.5 text-gray-800">{row.ItemDescription || '—'}</td>
-                    <td className="py-1.5 text-right text-gray-600">{row.MetalType || '—'}</td>
-                    <td className="py-1.5 text-right text-gray-800 font-medium">
-                      {row.ItemWeight != null ? Number(row.ItemWeight).toFixed(3) : '—'}
+                  <tr key={idx} style={{ borderBottom: '1px solid #f9fafb' }}>
+                    <td style={{ padding: '3px 0', color: '#9ca3af' }}>{idx + 1}</td>
+                    <td style={{ padding: '3px 0', color: '#111' }}>{row.ItemDescription || '—'}</td>
+                    <td style={{ padding: '3px 0', textAlign: 'right', color: '#4b5563' }}>{row.MetalType || '—'}</td>
+                    <td style={{ padding: '3px 0', textAlign: 'right', fontWeight: '600', color: '#111' }}>
+                      {(row.MetalWeight ?? row.ItemWeight) != null
+                        ? Number(row.MetalWeight ?? row.ItemWeight).toFixed(3)
+                        : '—'}
                     </td>
-                    <td className="py-1.5 text-right text-gray-600">
+                    <td style={{ padding: '3px 0', textAlign: 'right', color: '#4b5563' }}>
                       {row.Melting != null ? row.Melting : '—'}
                     </td>
                   </tr>
@@ -138,20 +136,20 @@ export default function LoanReceipt() {
           </div>
 
           {/* Loan amount */}
-          <div className="px-6 py-4 border-b-2 border-dashed border-gray-300">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-gray-600">Loan Amount</span>
-              <span className="text-2xl font-extrabold text-gray-900">
+          <div style={{ padding: '6px 12px 5px', borderBottom: '1.5px dashed #d1d5db' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ fontWeight: '600', color: '#4b5563' }}>Loan Amount</span>
+              <span style={{ fontSize: '20px', fontWeight: '900', color: '#111' }}>
                 ₹{Number(header.LoanAmount).toLocaleString('en-IN')}
               </span>
             </div>
           </div>
 
-          {/* Footer */}
-          <div className="px-6 py-4 text-center">
-            <p className="text-xs text-gray-400">Customer Signature</p>
-            <div className="mt-6 border-t border-gray-300 w-32 mx-auto" />
-            <p className="text-xs text-gray-300 mt-4">Thank you for your trust.</p>
+          {/* Signature */}
+          <div style={{ padding: '8px 12px 10px', textAlign: 'center' }}>
+            <div style={{ fontSize: '10px', color: '#6b7280' }}>Customer Signature</div>
+            <div style={{ borderTop: '1px solid #d1d5db', width: '100px', margin: '14px auto 0' }} />
+            <div style={{ fontSize: '9px', color: '#d1d5db', marginTop: '6px' }}>Thank you for your trust.</div>
           </div>
         </div>
       </div>

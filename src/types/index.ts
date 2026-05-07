@@ -77,6 +77,7 @@ export interface LoanItem {
 }
 
 export interface LoanEntryRequest {
+  loan_number: number
   loan_date: string
   customer_id: number
   customer_name: string

@@ -138,6 +138,7 @@ export default function LoanEntry() {
     setSubmitting(true)
     try {
       const res = await loansApi.create({
+        loan_number:      nextLoanNo!,
         loan_date:        loanDate,
         customer_id:      customer.CustomerID,
         customer_name:    customer.Name,

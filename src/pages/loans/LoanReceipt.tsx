@@ -63,10 +63,19 @@ export default function LoanReceipt() {
         </button>
       </div>
 
-      {/* Receipt — centered on screen, fills page when printing */}
+      {/* Force A6 page size when printing */}
+      <style>{`
+        @page { size: A6 portrait; margin: 8mm; }
+        @media print {
+          body { margin: 0; }
+          .receipt-card { width: 100% !important; max-width: 100% !important; box-shadow: none !important; border-radius: 0 !important; margin: 0 !important; }
+        }
+      `}</style>
+
+      {/* Receipt — centered on screen, fills A6 when printing */}
       <div className="flex justify-center bg-gray-100 min-h-screen py-8 print:bg-white print:py-0 print:block">
         <div
-          className="bg-white w-full max-w-sm mx-4 shadow-lg rounded-xl print:shadow-none print:rounded-none print:mx-0 print:max-w-full"
+          className="receipt-card bg-white w-full max-w-xs mx-4 shadow-lg rounded-xl print:shadow-none print:rounded-none print:mx-0 print:max-w-full"
           style={{ fontFamily: 'Arial, sans-serif' }}
         >
           {/* Receipt header */}

@@ -135,10 +135,12 @@ export default function LoanEntry() {
     const badItem = items.find((it) => !it.item_type_id || !it.metal_type || !it.item_weight)
     if (badItem)                          { toast.error('Fill Item Type, Metal and Weight for every item'); return }
 
+    if (!nextLoanNo) { toast.error('Loan number not loaded, refresh the page'); return }
+
     setSubmitting(true)
     try {
       const res = await loansApi.create({
-        loan_number:      nextLoanNo!,
+        loan_number:      nextLoanNo,
         loan_date:        loanDate,
         customer_id:      customer.CustomerID,
         customer_name:    customer.Name,
@@ -150,8 +152,9 @@ export default function LoanEntry() {
       })
       setSuccessLoan(res.loan_number)
     } catch (err: unknown) {
-      const msg = (err as { response?: { data?: { detail?: string } } })?.response?.data?.detail
-      toast.error(msg || 'Failed to create loan')
+      const axiosErr = err as { response?: { data?: { detail?: string } } }
+      const msg = axiosErr?.response?.data?.detail ?? 'Failed to create loan'
+      toast.error(msg, { duration: 8000 })
     } finally {
       setSubmitting(false)
     }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Search, Plus, Trash2, CheckCircle, UserCheck, UserX, Phone } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Search, Plus, Trash2, CheckCircle, UserCheck, UserX, Phone, Printer } from 'lucide-react'
 import { loansApi } from '../../api/loans'
 import { customersApi } from '../../api/customers'
 import type { Lookups, LoanItem, CustomerInfo } from '../../types'
@@ -24,6 +25,7 @@ function getTodayIST(): string {
 }
 
 export default function LoanEntry() {
+  const navigate = useNavigate()
   const [lookups, setLookups]         = useState<Lookups | null>(null)
   const [nextLoanNo, setNextLoanNo]   = useState<number | null>(null)
   const [loading, setLoading]         = useState(true)
@@ -181,13 +183,22 @@ export default function LoanEntry() {
           Loan <span className="font-bold text-gold-600 text-lg">#{successLoan}</span> saved for{' '}
           <span className="font-semibold">{customer?.Name}</span>.
         </p>
-        <button
-          onClick={reset}
-          className="inline-flex items-center gap-2 px-6 py-2.5 bg-gold-500 hover:bg-gold-600
-                     text-white rounded-xl font-semibold text-sm transition-all shadow-sm"
-        >
-          <Plus className="w-4 h-4" /> Create Another Loan
-        </button>
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <button
+            onClick={() => navigate(`/loans/receipt/${successLoan}`)}
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-navy-900 hover:bg-navy-800
+                       text-white rounded-xl font-semibold text-sm transition-all shadow-sm"
+          >
+            <Printer className="w-4 h-4" /> Print Receipt
+          </button>
+          <button
+            onClick={reset}
+            className="inline-flex items-center gap-2 px-6 py-2.5 bg-gold-500 hover:bg-gold-600
+                       text-white rounded-xl font-semibold text-sm transition-all shadow-sm"
+          >
+            <Plus className="w-4 h-4" /> New Loan
+          </button>
+        </div>
       </div>
     )
   }

@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Dashboard from './pages/Dashboard'
 import LoanSearch from './pages/loans/LoanSearch'
 import LoanEntry from './pages/loans/LoanEntry'
+import LoanReceipt from './pages/loans/LoanReceipt'
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated())
@@ -31,6 +32,15 @@ export default function App() {
           <Route path="loans/search" element={<LoanSearch />} />
           <Route path="loans/entry" element={<LoanEntry />} />
         </Route>
+        {/* Standalone receipt page — no sidebar */}
+        <Route
+          path="/loans/receipt/:loanNumber"
+          element={
+            <PrivateRoute>
+              <LoanReceipt />
+            </PrivateRoute>
+          }
+        />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
